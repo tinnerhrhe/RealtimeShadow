@@ -105,7 +105,10 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  return 1.0;
+  float closestDepth = texture2D(shadowMap, shadowCoord.xy).r;
+  float currentDepth = shadowCoord.z;
+  float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+  return shadow;
 }
 
 vec3 blinnPhong() {
@@ -135,6 +138,7 @@ void main(void) {
 
   float visibility;
   vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w;
+  shadowCoord = shadowCoord * 0.5 + 0.5;
   visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
