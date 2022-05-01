@@ -105,9 +105,10 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  float closestDepth = texture2D(shadowMap, shadowCoord.xy).r;
+  vec4 closestDepthVec = texture2D(shadowMap, shadowCoord.xy);
+  float closestDepth = unpack(closestDepthVec);
   float currentDepth = shadowCoord.z;
-  float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+  float shadow = closestDepth > currentDepth ? 1.0 : 0.0;
   return shadow;
 }
 
