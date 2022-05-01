@@ -23,8 +23,8 @@ class DirectionalLight {
 
         // Model transform
         // multiply(out, a, b)
-        mat4.scale(modelMatrix, modelMatrix, scale);
         mat4.translate(modelMatrix, modelMatrix, translate);
+        mat4.scale(modelMatrix, modelMatrix, scale);
 
         // View transform
         // lookAt(out, eye, center, up)
@@ -32,7 +32,7 @@ class DirectionalLight {
     
         // Projection transform
         // ortho(out, left, right, bottom, top, near, far)
-        mat4.ortho(projectionMatrix, -10, 10, -10, 10, 1.0, 7.5);
+        mat4.ortho(projectionMatrix, 100, -100, 100, -100, 1.0, 400.0);
 
         mat4.multiply(lightMVP, projectionMatrix, viewMatrix);
         mat4.multiply(lightMVP, lightMVP, modelMatrix);
