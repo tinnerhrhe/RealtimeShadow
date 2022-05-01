@@ -108,7 +108,8 @@ float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
   vec4 closestDepthVec = texture2D(shadowMap, shadowCoord.xy);
   float closestDepth = unpack(closestDepthVec);
   float currentDepth = shadowCoord.z;
-  float shadow = closestDepth > currentDepth ? 1.0 : 0.0;
+  float bias = 0.005;
+  float shadow = closestDepth > currentDepth - bias ? 1.0 : 0.0;
   return shadow;
 }
 
