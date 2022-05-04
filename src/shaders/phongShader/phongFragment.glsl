@@ -85,7 +85,7 @@ void uniformDiskSamples( const in vec2 randomSeed ) {
 }
 
 float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
-    poissonDiskSamples(uv);
+	poissonDiskSamples(uv);
   //uniformDiskSamples(uv);
 
   float textureSize = 400.0;
@@ -99,10 +99,10 @@ float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
   float blockDepth = 0.0;
   for( int i = 0; i < NUM_SAMPLES; i ++ ) {
     vec2 sampleCoord = poissonDisk[i] * filterRange + uv;
-    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
-    float closestDepth = unpack(closestDepthVec);
-    if(zReceiver > closestDepth + 0.01){
-      blockDepth += closestDepth;
+    vec4 depthVec = texture2D(shadowMap, sampleCoord); 
+    float depth = unpack(depthVec);
+    if(zReceiver > depth + 0.01){
+      blockDepth += depth;
       blockCount += 1;
     }
   }
@@ -126,10 +126,10 @@ float PCF(sampler2D shadowMap, vec4 coords) {
   int unBlockCount = 0;
   for( int i = 0; i < NUM_SAMPLES; i ++ ) {
     vec2 sampleCoord = poissonDisk[i] * filterRange + coords.xy;
-    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
-    float closestDepth = unpack(closestDepthVec);
+    vec4 depthVec = texture2D(shadowMap, sampleCoord); 
+    float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < closestDepth + 0.01){
+    if(currentDepth < depth + 0.01){
       unBlockCount += 1;
     }
   }
@@ -139,7 +139,6 @@ float PCF(sampler2D shadowMap, vec4 coords) {
 }
 
 float PCSS(sampler2D shadowMap, vec4 coords){
-
   float zReceiver = coords.z;
 
   // STEP 1: avgblocker depth
@@ -157,10 +156,10 @@ float PCSS(sampler2D shadowMap, vec4 coords){
   int unBlockCount = 0;
   for( int i = 0; i < NUM_SAMPLES; i ++ ) {
     vec2 sampleCoord = poissonDisk[i] * filterRange + coords.xy;
-    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
-    float closestDepth = unpack(closestDepthVec);
+    vec4 depthVec = texture2D(shadowMap, sampleCoord); 
+    float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < closestDepth + 0.01){
+    if(currentDepth < depth + 0.01){
       unBlockCount += 1;
     }
   }
