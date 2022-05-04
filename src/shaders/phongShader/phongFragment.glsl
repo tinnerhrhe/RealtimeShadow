@@ -19,6 +19,7 @@ varying highp vec3 vNormal;
 #define BLOCKER_SEARCH_NUM_SAMPLES NUM_SAMPLES
 #define PCF_NUM_SAMPLES NUM_SAMPLES
 #define NUM_RINGS 10
+#define W_LIGHT 1.15
 
 #define EPS 1e-3
 #define PI 3.141592653589793
@@ -84,23 +85,88 @@ void uniformDiskSamples( const in vec2 randomSeed ) {
 }
 
 float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
-	return 1.0;
+    poissonDiskSamples(uv);
+  //uniformDiskSamples(uv);
+
+  float textureSize = 400.0;
+
+  // define the stride
+  float filterStride = 20.0;
+  float filterRange = 1.0 / textureSize * filterStride;
+
+  // calculate relative position
+  int blockCount = 0;
+  float blockDepth = 0.0;
+  for( int i = 0; i < NUM_SAMPLES; i ++ ) {
+    vec2 sampleCoord = poissonDisk[i] * filterRange + uv;
+    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
+    float closestDepth = unpack(closestDepthVec);
+    if(zReceiver > closestDepth + 0.01){
+      blockDepth += closestDepth;
+      blockCount += 1;
+    }
+  }
+
+  
+  // average
+  return blockDepth / float(blockCount);
 }
 
 float PCF(sampler2D shadowMap, vec4 coords) {
-  return 1.0;
+  poissonDiskSamples(coords.xy);
+  //uniformDiskSamples(coords.xy);
+
+  // the size of shadow map filter
+  float textureSize = 400.0;
+  // define the stride
+  float filterStride = 5.0;
+  // calculate corresponding range
+  float filterRange = 1.0 / textureSize * filterStride;
+  // relative shadow position among the range
+  int unBlockCount = 0;
+  for( int i = 0; i < NUM_SAMPLES; i ++ ) {
+    vec2 sampleCoord = poissonDisk[i] * filterRange + coords.xy;
+    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
+    float closestDepth = unpack(closestDepthVec);
+    float currentDepth = coords.z;
+    if(currentDepth < closestDepth + 0.01){
+      unBlockCount += 1;
+    }
+  }
+
+  float shadow = float(unBlockCount) / float(NUM_SAMPLES);
+  return shadow;
 }
 
 float PCSS(sampler2D shadowMap, vec4 coords){
 
+  float zReceiver = coords.z;
+
   // STEP 1: avgblocker depth
+  float zBlocker = findBlocker(shadowMap, coords.xy, zReceiver);
+  if(zBlocker < EPS) return 1.0;
+  if(zBlocker > 1.0) return 0.0;
 
   // STEP 2: penumbra size
+  float wPenumbra = (zReceiver - zBlocker) * W_LIGHT / zBlocker;
 
   // STEP 3: filtering
-  
-  return 1.0;
+  float textureSize = 400.0;
+  float filterStride = 5.0;
+  float filterRange = 1.0 / textureSize * filterStride * wPenumbra;
+  int unBlockCount = 0;
+  for( int i = 0; i < NUM_SAMPLES; i ++ ) {
+    vec2 sampleCoord = poissonDisk[i] * filterRange + coords.xy;
+    vec4 closestDepthVec = texture2D(shadowMap, sampleCoord); 
+    float closestDepth = unpack(closestDepthVec);
+    float currentDepth = coords.z;
+    if(currentDepth < closestDepth + 0.01){
+      unBlockCount += 1;
+    }
+  }
 
+  float shadow = float(unBlockCount) / float(NUM_SAMPLES);
+  return shadow;
 }
 
 
