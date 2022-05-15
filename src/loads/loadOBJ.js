@@ -46,11 +46,21 @@ function loadOBJ(renderer, path, name, objMaterial, transform) {
 							let Translation = [transform.modelTransX, transform.modelTransY, transform.modelTransZ];
 							let Scale = [transform.modelScaleX, transform.modelScaleY, transform.modelScaleZ];
 
-							let light = renderer.lights[0].entity;
+							// let light = renderer.lights[0].entity;
+							let lights = [];
+							for (let light of renderer.lights) {
+								lights.push(light.entity);
+							}
 							switch (objMaterial) {
 								case 'PhongMaterial':
-									material = buildPhongMaterial(colorMap, mat.specular.toArray(), light, Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
-									shadowMaterial = buildShadowMaterial(light, Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
+									if (lights.length == 2){
+										material = buildPhongMaterial(colorMap, mat.specular.toArray(), lights, Translation, Scale, "./src/shaders/phongShader/phongVertexMore.glsl", "./src/shaders/phongShader/phongFragmentMore.glsl");
+										shadowMaterial = buildShadowMaterial(lights, Translation, Scale, "./src/shaders/shadowShader/shadowVertexMore.glsl", "./src/shaders/shadowShader/shadowFragmentMore.glsl");
+									}
+									else {
+										material = buildPhongMaterial(colorMap, mat.specular.toArray(), lights[0], Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
+										shadowMaterial = buildShadowMaterial(lights[0], Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
+									}
 									break;
 							}
 
