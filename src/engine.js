@@ -61,7 +61,7 @@ function GAMES202Main() {
 	let obj2Transform = setTransform(40, 0, -40, 10, 10, 10);
 
 	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform, 'marry1');
-	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform.modelScaleX, 'marry2');
+	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform, 'marry2');
 	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform, 'floor');
 	
 
@@ -90,8 +90,8 @@ function GAMES202Main() {
 		renderer.render();
 		requestAnimationFrame(mainLoop);
 
-		// renderer.setTranslateScale('marry1', [baseshift, 0, 0], [20, 20, 20]);
-		// renderer.setTranslateScale('marry2', [40 + baseshift, 0, -40], [10, 10, 10]);
+		renderer.setTranslateScale('marry1', [baseshift, 0, 0], [20, 20, 20]);
+		renderer.setTranslateScale('marry2', [40 + baseshift, 0, -40], [10, 10, 10]);
 
 		baseshift += 0.1
 	}
