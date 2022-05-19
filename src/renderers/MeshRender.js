@@ -207,7 +207,7 @@ class MeshRender {
 
 	setMeshTranslateScale(translate, scale){
 		this.material.setUniformsParams('uLightMVP', this.material.light.CalcLightMVP(translate, scale));
-		this.material.setUniformsParams('uLightMVP2', this.material.light.CalcLightMVP(translate, scale));
+		this.material.setUniformsParams('uLightMVP2', this.material.light2.CalcLightMVP(translate, scale));
 	}
 
 	setShadowMeshTranslateScale(translate, scale){
