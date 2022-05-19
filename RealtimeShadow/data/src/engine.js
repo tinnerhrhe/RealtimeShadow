@@ -49,7 +49,7 @@ function GAMES202Main() {
 	let lightUp = [0, 1, 0]
 	const directionLight = new DirectionalLight(5000, [1, 1, 1], lightPos, focalPoint, lightUp, true, renderer.gl);
 	// light 2
-	let lightPos_2 = [20, 60, 80];
+	let lightPos_2 = [0, 60, 80];
 	const directionLight_2 = new DirectionalLight(5000, [1, 1, 1], lightPos_2, focalPoint, lightUp, true, renderer.gl);
 	renderer.addLight(directionLight);
 	renderer.addLight(directionLight_2);
@@ -60,9 +60,9 @@ function GAMES202Main() {
 	let obj1Transform = setTransform(0, 0, 0, 20, 20, 20);
 	let obj2Transform = setTransform(40, 0, -40, 10, 10, 10);
 
-	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform);
-	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform);
-	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform);
+	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform, '1');
+	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform, '2');
+	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform, '3');
 	
 
 	// let floorTransform = setTransform(0, 0, 0, 100, 100, 100);
@@ -81,12 +81,22 @@ function GAMES202Main() {
 		// panelModel.open();
 	}
 	createGUI();
-
+	var r = 50.0, angle = 0.0;
+	let dynamic = true; //determine to be static or dynamic
 	function mainLoop(now) {
 		cameraControls.update();
 
 		renderer.render();
 		requestAnimationFrame(mainLoop);
+		if(dynamic){
+			let ntrans = [r*Math.sin(angle), 0.0, r*Math.cos(angle)];
+			let ntrans2 = [r*Math.sin(angle+1), 0.0, r*Math.cos(angle+1)];
+			let scale1 = 14+4*Math.sin(angle*2);
+			let scale2 = 7+2*Math.cos(angle*2);
+			renderer.setTranslateScale('1', ntrans, [scale1,scale1,scale1]);
+			renderer.setTranslateScale('2', ntrans2, [scale2,scale2,scale2]);
+			angle += 0.002;
+		}
 	}
 	requestAnimationFrame(mainLoop);
 }

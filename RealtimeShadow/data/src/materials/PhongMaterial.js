@@ -21,9 +21,9 @@ class PhongMaterial extends Material {
         this.light = light;
         this.light2 = light2;
     }
-    setUniformsParams(pname, nvalue){
-        if(pname in this.uniforms){
-            this.uniforms[pname].value = nvalue;
+    setUniformsParams(name, value){
+        if(name in this.uniforms){
+            this.uniforms[name].value = value;
         }
     }
 }

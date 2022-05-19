@@ -204,4 +204,12 @@ class MeshRender {
 		}
 		
 	}
+	setMeshTranslateScale(trans, scale){
+        this.material.setUniformsParams('uLightMVP', this.material.light.CalcLightMVP(trans, scale));
+        this.material.setUniformsParams('uLightMVP2', this.material.light2.CalcLightMVP(trans, scale));
+    }
+
+    setShadowMeshTranslateScale(trans, scale){
+        this.material.setUniformsParams('uLightMVP', this.material.light.CalcLightMVP(trans, scale));
+    }
 }

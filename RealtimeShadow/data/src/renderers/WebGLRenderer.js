@@ -2,7 +2,7 @@ class WebGLRenderer {
     meshes = [];
     shadowMeshes = [];
     lights = [];
-
+    meshdict = {};
     constructor(gl, camera) {
         this.gl = gl;
         this.camera = camera;
@@ -42,13 +42,23 @@ class WebGLRenderer {
                     this.shadowMeshes[i].draw(this.camera);
                 }
             }
+        }
 
-            // Camera pass
-            for (let i = 0; i < this.meshes.length; i++) {
-                this.gl.useProgram(this.meshes[i].shader.program.glShaderProgram);
-                this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[l].entity.lightPos);
-                this.meshes[i].draw(this.camera);
-            }
+        // Camera pass
+        for (let i = 0; i < this.meshes.length; i++) {
+            this.gl.useProgram(this.meshes[i].shader.program.glShaderProgram);
+            this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[0].entity.lightPos);
+            this.meshes[i].draw(this.camera);
+        }
+    }
+
+    setTranslateScale(meshname, trans, scale){
+        for (let i of this.meshdict[meshname][0]){
+            this.meshes[i].mesh.setTranslateScale(trans, scale);
+            this.meshes[i].setMeshTranslateScale(trans, scale);
+        }
+        for (let i of this.meshdict[meshname][1]){
+            this.shadowMeshes[i].setShadowMeshTranslateScale(trans, scale);
         }
     }
 }

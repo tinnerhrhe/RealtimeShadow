@@ -35,6 +35,10 @@ class Mesh {
 			this.texcoordsName = texcoordsAttrib.name;
 		}
 	}
+	setTranslateScale(trans, scale){
+		let meshTrans = new TRSTransform(trans, scale);
+		this.transform = meshTrans;
+    }
 
 	static cube(transform) {
 		const positions = [

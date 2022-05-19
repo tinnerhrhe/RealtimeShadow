@@ -8,9 +8,9 @@ class ShadowMaterial extends Material {
         }, [], vertexShader, fragmentShader, light.fbo);
         this.light = light;
     }
-    setUniformsParams(pname, nvalue){
-        if(pname in this.uniforms){
-            this.uniforms[pname].value = nvalue;
+    setUniformsParams(name, value){
+        if(name in this.uniforms){
+            this.uniforms[name].value = value;
         }
     }
 }
