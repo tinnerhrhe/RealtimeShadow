@@ -209,15 +209,15 @@ void main(void) {
   // 归一化至 [0,1] 
   shadowCoord = shadowCoord * 0.5 + 0.5;
   float visibility, visibility2;
-  //visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
-  //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
-  visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+  visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 #if defined(ENABLE_2LIGHT)
   vec3 shadowCoord2 = vPositionFromLight2.xyz / vPositionFromLight2.w;
   shadowCoord2 = shadowCoord2 * 0.5 + 0.5;
-  //visibility2 = useShadowMap(uShadowMap2, vec4(shadowCoord2, 1.0));
-  //visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
-  visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
+  visibility2 = useShadowMap(uShadowMap2, vec4(shadowCoord2, 1.0));
+  // visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
+  // visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
   visibility = (visibility + visibility2) / 2.0;
 #endif
   vec3 phongColor = blinnPhong();

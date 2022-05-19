@@ -1,4 +1,6 @@
-function loadOBJ(renderer, path, name, objMaterial, transform) {
+function loadOBJ(renderer, path, name, objMaterial, transform, meshname) {
+
+	renderer.mdict[meshname] = {'mesh': [], 'shadowMesh': []};
 
 	const manager = new THREE.LoadingManager();
 	manager.onProgress = function (item, loaded, total) {
@@ -59,17 +61,17 @@ function loadOBJ(renderer, path, name, objMaterial, transform) {
 							material.then((data) => {
 								let meshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addMeshRender(meshRender);
-								//renderer.mdict[meshname][0].push(renderer.meshes.length-1);
+								renderer.mdict[meshname]['mesh'].push(renderer.meshes.length-1);
 							});
 							shadowMaterial.then((data) => {
 								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addShadowMeshRender(shadowMeshRender);
-								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
+								renderer.mdict[meshname]['shadowMesh'].push(renderer.shadowMeshes.length-1);
 							});
 							shadowMaterial2.then((data) => {
 								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addShadowMeshRender(shadowMeshRender);
-								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
+								renderer.mdict[meshname]['shadowMesh'].push(renderer.shadowMeshes.length-1);
 							});
 						}
 					});

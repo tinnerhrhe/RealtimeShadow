@@ -85,4 +85,9 @@ class Mesh {
 
 		return new Mesh({ name: 'aVertexPosition', array: new Float32Array(positions) }, null, null, indices, transform);
 	}
+
+	setTranslateScale(translate, scale) {
+		let meshTrans = new TRSTransform(translate, scale);
+		this.transform = meshTrans;
+	}
 }

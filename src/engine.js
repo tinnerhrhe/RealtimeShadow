@@ -60,9 +60,9 @@ function GAMES202Main() {
 	let obj1Transform = setTransform(0, 0, 0, 20, 20, 20);
 	let obj2Transform = setTransform(40, 0, -40, 10, 10, 10);
 
-	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform);
-	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform);
-	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform);
+	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform, 'marry1');
+	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform.modelScaleX, 'marry2');
+	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform, 'floor');
 	
 
 	// let floorTransform = setTransform(0, 0, 0, 100, 100, 100);
@@ -82,11 +82,18 @@ function GAMES202Main() {
 	}
 	createGUI();
 
+	var baseshift = 0
+
 	function mainLoop(now) {
 		cameraControls.update();
 
 		renderer.render();
 		requestAnimationFrame(mainLoop);
+
+		// renderer.setTranslateScale('marry1', [baseshift, 0, 0], [20, 20, 20]);
+		// renderer.setTranslateScale('marry2', [40 + baseshift, 0, -40], [10, 10, 10]);
+
+		baseshift += 0.1
 	}
 	requestAnimationFrame(mainLoop);
 }

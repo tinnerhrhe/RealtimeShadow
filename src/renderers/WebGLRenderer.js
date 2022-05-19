@@ -1,4 +1,5 @@
 class WebGLRenderer {
+    mdict = {};
     meshes = [];
     shadowMeshes = [];
     lights = [];
@@ -49,6 +50,16 @@ class WebGLRenderer {
                 this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[l].entity.lightPos);
                 this.meshes[i].draw(this.camera);
             }
+        }
+    }
+
+    setTranslateScale(meshname, translate, scale){
+        for (let i of this.mdict[meshname]['mesh']){
+            this.meshes[i].mesh.setTranslateScale(translate, scale);
+            this.meshes[i].setMeshTranslateScale(translate, scale);
+        }
+        for (let i of this.mdict[meshname]['shadowMesh']){
+            this.shadowMeshes[i].setShadowMeshTranslateScale(translate, scale);
         }
     }
 }
