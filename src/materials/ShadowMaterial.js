@@ -6,6 +6,12 @@ class ShadowMaterial extends Material {
         super({
             'uLightMVP': { type: 'matrix4fv', value: lightMVP }
         }, [], vertexShader, fragmentShader, light.fbo);
+        this.light = light;
+    }
+    setUniformsParams(pname, nvalue){
+        if(pname in this.uniforms){
+            this.uniforms[pname].value = nvalue;
+        }
     }
 }
 

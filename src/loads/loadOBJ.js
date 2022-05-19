@@ -42,35 +42,34 @@ function loadOBJ(renderer, path, name, objMaterial, transform) {
 								colorMap.CreateConstantTexture(renderer.gl, mat.color.toArray());
 							}
 
-							let material, shadowMaterial;
+							let material, shadowMaterial, shadowMaterial2;
 							let Translation = [transform.modelTransX, transform.modelTransY, transform.modelTransZ];
 							let Scale = [transform.modelScaleX, transform.modelScaleY, transform.modelScaleZ];
 
-							// let light = renderer.lights[0].entity;
-							let lights = [];
-							for (let light of renderer.lights) {
-								lights.push(light.entity);
-							}
+							let light = renderer.lights[0].entity;
+							let light2 = renderer.lights[1].entity;
 							switch (objMaterial) {
 								case 'PhongMaterial':
-									if (lights.length == 2){
-										material = buildPhongMaterial(colorMap, mat.specular.toArray(), lights, Translation, Scale, "./src/shaders/phongShader/phongVertexMore.glsl", "./src/shaders/phongShader/phongFragmentMore.glsl");
-										shadowMaterial = buildShadowMaterial(lights, Translation, Scale, "./src/shaders/shadowShader/shadowVertexMore.glsl", "./src/shaders/shadowShader/shadowFragmentMore.glsl");
-									}
-									else {
-										material = buildPhongMaterial(colorMap, mat.specular.toArray(), lights[0], Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
-										shadowMaterial = buildShadowMaterial(lights[0], Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
-									}
+									material = buildPhongMaterial(colorMap, mat.specular.toArray(), light, light2, Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
+									shadowMaterial = buildShadowMaterial(light, Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
+									shadowMaterial2 = buildShadowMaterial(light2, Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
 									break;
 							}
 
 							material.then((data) => {
 								let meshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addMeshRender(meshRender);
+								//renderer.mdict[meshname][0].push(renderer.meshes.length-1);
 							});
 							shadowMaterial.then((data) => {
 								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addShadowMeshRender(shadowMeshRender);
+								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
+							});
+							shadowMaterial2.then((data) => {
+								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
+								renderer.addShadowMeshRender(shadowMeshRender);
+								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
 							});
 						}
 					});
