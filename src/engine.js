@@ -82,7 +82,11 @@ function GAMES202Main() {
 	}
 	createGUI();
 
-	var baseshift = 0
+	var xshift = 0;
+	var zshift = 0;
+	var posstate = 0;
+	var scale = 1.0
+	var scalestate = true;
 
 	function mainLoop(now) {
 		cameraControls.update();
@@ -90,10 +94,33 @@ function GAMES202Main() {
 		renderer.render();
 		requestAnimationFrame(mainLoop);
 
-		renderer.setTranslateScale('marry1', [baseshift, 0, 0], [20, 20, 20]);
-		renderer.setTranslateScale('marry2', [40 + baseshift, 0, -40], [10, 10, 10]);
+		renderer.setTranslateScale('marry1', [xshift, 0, zshift], [20*scale, 20*scale, 20*scale]);
+		renderer.setTranslateScale('marry2', [40 + xshift, 0, -40 + zshift], [10*scale, 10*scale, 10*scale]);
 
-		baseshift += 0.1
+		switch(posstate) {
+			case 0:
+				xshift += 0.1; 
+				if (xshift >= 30) posstate = 1;
+				break;
+			case 1:
+				zshift += 0.1;
+				if (zshift >= 30) posstate = 2;
+				break;
+			case 2:
+				xshift -= 0.1;
+				if (xshift <= -30) posstate = 3;
+				break;
+			case 3:
+				zshift -= 0.1;
+				if (zshift <= -30) posstate = 0;
+				break;
+		}
+
+		scale += scalestate ? 0.002 : -0.002;
+
+		if (scale >= 1.5) scalestate = false;
+		if (scale <= 0.5) scalestate = true;
+
 	}
 	requestAnimationFrame(mainLoop);
 }
