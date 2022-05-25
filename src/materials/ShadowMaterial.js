@@ -8,11 +8,6 @@ class ShadowMaterial extends Material {
         }, [], vertexShader, fragmentShader, light.fbo);
         this.light = light;
     }
-    setUniformsParams(pname, nvalue){
-        if(pname in this.uniforms){
-            this.uniforms[pname].value = nvalue;
-        }
-    }
 }
 
 async function buildShadowMaterial(light, translate, scale, vertexPath, fragmentPath) {

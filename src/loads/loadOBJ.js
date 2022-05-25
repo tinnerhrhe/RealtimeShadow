@@ -59,17 +59,14 @@ function loadOBJ(renderer, path, name, objMaterial, transform) {
 							material.then((data) => {
 								let meshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addMeshRender(meshRender);
-								//renderer.mdict[meshname][0].push(renderer.meshes.length-1);
 							});
 							shadowMaterial.then((data) => {
 								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addShadowMeshRender(shadowMeshRender);
-								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
 							});
 							shadowMaterial2.then((data) => {
 								let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
 								renderer.addShadowMeshRender(shadowMeshRender);
-								//renderer.mdict[meshname][1].push(renderer.shadowMeshes.length-1);
 							});
 						}
 					});

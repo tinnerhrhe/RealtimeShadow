@@ -21,11 +21,6 @@ class PhongMaterial extends Material {
         this.light = light;
         this.light2 = light2;
     }
-    setUniformsParams(pname, nvalue){
-        if(pname in this.uniforms){
-            this.uniforms[pname].value = nvalue;
-        }
-    }
 }
 
 async function buildPhongMaterial(color, specular, light, light2, translate, scale, vertexPath, fragmentPath) {
