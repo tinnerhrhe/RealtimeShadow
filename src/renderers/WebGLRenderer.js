@@ -29,8 +29,7 @@ class WebGLRenderer {
         //console.assert(this.lights.length == 1, "Multiple lights");
 
         for (let l = 0; l < this.lights.length; l++) {
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this.lights[l].entity.fbo);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
+            
             // Draw light
             // TODO: Support all kinds of transform
             this.lights[l].meshRender.mesh.transform.translate = this.lights[l].entity.lightPos;
