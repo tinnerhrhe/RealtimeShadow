@@ -15,6 +15,10 @@ class DirectionalLight {
         }
     }
 
+    GetLightPos() {
+        return this.lightPos;
+    }
+
     CalcLightMVP(translate, scale) {
         let lightMVP = mat4.create();
         let modelMatrix = mat4.create();
