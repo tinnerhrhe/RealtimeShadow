@@ -213,22 +213,29 @@ void main(void) {
   // 归一化至 [0,1] 
   shadowCoord = shadowCoord * 0.5 + 0.5;
   float visibility, visibility2;
-  visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
-  // visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+  visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
   vec3 radiance = calcDirLight(uLightPos, uLightIntensity, color, normal, viewDir);
 
 #if defined(ENABLE_2LIGHT)
   vec3 shadowCoord2 = vPositionFromLight2.xyz / vPositionFromLight2.w;
   shadowCoord2 = shadowCoord2 * 0.5 + 0.5;
-  visibility2 = useShadowMap(uShadowMap2, vec4(shadowCoord2, 1.0));
+  // visibility2 = useShadowMap(uShadowMap2, vec4(shadowCoord2, 1.0));
   //visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
-  // visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
+  visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
 
-  visibility = (visibility + visibility2) / 2.0;
-  // visibility = max(visibility, visibility2);
-  radiance = radiance + calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
+  if (dot(uLightPos, uLightPos2) < 0.0){
+    // larger than 180 degree, the shadow could be lightened.
+    visibility = max(visibility, visibility2);
+  } else {
+    // smaller than 180 degree, the shadow is added up.
+    visibility = (visibility + visibility2) / 2.0;
+  }
+
+  vec3 radiance2 = calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
+  radiance += radiance2;
 #endif
 
   vec3 phongColor = pow(radiance, vec3(1.0 / 2.2));
