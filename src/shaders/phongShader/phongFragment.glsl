@@ -7,8 +7,10 @@ uniform sampler2D uSampler;
 uniform vec3 uKd;
 uniform vec3 uKs;
 uniform vec3 uLightPos;
+uniform vec3 uLightPos2;
 uniform vec3 uCameraPos;
 uniform vec3 uLightIntensity;
+uniform vec3 uLightIntensity2;
 
 varying highp vec2 vTextureCoord;
 varying highp vec3 vFragPos;
@@ -175,52 +177,61 @@ float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
   float depth = unpack(depthVec);
   // get depth of current fragment from light's perspective
   float currentDepth = shadowCoord.z;
+
   // check whether current frag pos is in shadow
-  float bias = max(0.01 * (1.0 - dot(normalize(vNormal), normalize(uLightPos))), 0.005);
+  // float bias = max(0.01 * (1.0 - dot(normalize(vNormal), normalize(uLightPos))), 0.005);
+  // Reduce the program complexity on multisource,
+  // use a constant bias to avoid the case split.
+  float bias = 0.01;
   float shadow = depth+bias > currentDepth ? 1.0 : 0.0;
   return shadow;
 }
 
-vec3 blinnPhong() {
-  vec3 color = texture2D(uSampler, vTextureCoord).rgb;
-  color = pow(color, vec3(2.2));
-
+vec3 calcDirLight(vec3 LightPos, vec3 LightIntensity, vec3 color, vec3 normal, vec3 viewDir) {
   vec3 ambient = 0.05 * color;
 
-  vec3 lightDir = normalize(uLightPos);
-  vec3 normal = normalize(vNormal);
+  vec3 lightDir = normalize(LightPos);
   float diff = max(dot(lightDir, normal), 0.0);
   vec3 light_atten_coff =
-      uLightIntensity / pow(length(uLightPos - vFragPos), 2.0);
+      LightIntensity / pow(length(LightPos - vFragPos), 2.0);
   vec3 diffuse = diff * light_atten_coff * color;
 
-  vec3 viewDir = normalize(uCameraPos - vFragPos);
   vec3 halfDir = normalize((lightDir + viewDir));
   float spec = pow(max(dot(halfDir, normal), 0.0), 32.0);
   vec3 specular = uKs * light_atten_coff * spec;
 
-  vec3 radiance = (ambient + diffuse + specular);
-  vec3 phongColor = pow(radiance, vec3(1.0 / 2.2));
-  return phongColor;
+  return (ambient + diffuse + specular);
 }
 
 void main(void) {
+  vec3 color = texture2D(uSampler, vTextureCoord).rgb;
+  color = pow(color, vec3(2.2));
+  vec3 normal = normalize(vNormal);
+  vec3 viewDir = normalize(uCameraPos - vFragPos);
+
   vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w;
   // 归一化至 [0,1] 
   shadowCoord = shadowCoord * 0.5 + 0.5;
   float visibility, visibility2;
   visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
-  // visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
+  //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
   // visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+
+  vec3 radiance = calcDirLight(uLightPos, uLightIntensity, color, normal, viewDir);
+
 #if defined(ENABLE_2LIGHT)
   vec3 shadowCoord2 = vPositionFromLight2.xyz / vPositionFromLight2.w;
   shadowCoord2 = shadowCoord2 * 0.5 + 0.5;
   visibility2 = useShadowMap(uShadowMap2, vec4(shadowCoord2, 1.0));
-  // visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
+  //visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
   // visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
+
   visibility = (visibility + visibility2) / 2.0;
+  // visibility = max(visibility, visibility2);
+  radiance = radiance + calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
 #endif
-  vec3 phongColor = blinnPhong();
+
+  vec3 phongColor = pow(radiance, vec3(1.0 / 2.2));
 
   gl_FragColor = vec4(phongColor * visibility, 1.0);
   //gl_FragColor = vec4(phongColor*visibility, 1.0);

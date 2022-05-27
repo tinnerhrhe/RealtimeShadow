@@ -2,14 +2,19 @@ class PhongMaterial extends Material {
 
     constructor(color, specular, light, light2, translate, scale, vertexShader, fragmentShader) {
         let lightMVP = light.CalcLightMVP(translate, scale);
+        let lightPos = light.GetLightPos();
         let lightIntensity = light.mat.GetIntensity();
         let lightMVP2 = light2.CalcLightMVP(translate, scale);
+        let lightPos2 = light2.GetLightPos();
         let lightIntensity2 = light2.mat.GetIntensity();
         super({
             // Phong
             'uSampler': { type: 'texture', value: color },
             'uKs': { type: '3fv', value: specular },
+            'uLightPos': { type: '3fv', value: lightPos },
+            'uLightPos2': { type: '3fv', value: lightPos2 },
             'uLightIntensity': { type: '3fv', value: lightIntensity },
+            'uLightIntensity2': { type: '3fv', value: lightIntensity2 },
             // Shadow
             'uShadowMap': { type: 'texture', value: light.fbo },
             'uLightMVP': { type: 'matrix4fv', value: lightMVP },

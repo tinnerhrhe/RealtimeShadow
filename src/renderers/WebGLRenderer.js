@@ -43,13 +43,16 @@ class WebGLRenderer {
                     this.shadowMeshes[i].draw(this.camera);
                 }
             }
+        }
 
-            // Camera pass
-            for (let i = 0; i < this.meshes.length; i++) {
-                this.gl.useProgram(this.meshes[i].shader.program.glShaderProgram);
-                this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[l].entity.lightPos);
-                this.meshes[i].draw(this.camera);
+        // Camera pass
+        for (let i = 0; i < this.meshes.length; i++) {
+            this.gl.useProgram(this.meshes[i].shader.program.glShaderProgram);
+            this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[0].entity.lightPos);
+            if (this.lights.length == 2){
+                this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos2, this.lights[1].entity.lightPos);
             }
+            this.meshes[i].draw(this.camera);
         }
     }
 
