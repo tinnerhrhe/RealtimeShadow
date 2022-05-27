@@ -227,10 +227,10 @@ void main(void) {
   visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
 
   if (dot(uLightPos, uLightPos2) < 0.0){
-    // larger than 180 degree, the shadow could be lightened.
+    // on the opposite side, the shadow could be lightened.
     visibility = max(visibility, visibility2);
   } else {
-    // smaller than 180 degree, the shadow is added up.
+    // on the same side, the shadow is added up.
     visibility = (visibility + visibility2) / 2.0;
   }
 
