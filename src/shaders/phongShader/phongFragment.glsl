@@ -226,13 +226,7 @@ void main(void) {
   //visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
   visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
 
-  // if (dot(uLightPos.xz, uLightPos2.xz) < 0.0){
-    // on the opposite side, the shadow could be lightened.
-    // visibility = max(visibility, visibility2);
-  // } else {
-    // on the same side, the shadow is added up.
-    visibility = (visibility + visibility2) / 2.0;
-  // }
+  visibility = max(visibility, visibility2);
 
   vec3 radiance2 = calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
   radiance += radiance2;
