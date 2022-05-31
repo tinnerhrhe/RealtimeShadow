@@ -131,7 +131,7 @@ float PCF(sampler2D shadowMap, vec4 coords) {
     vec4 depthVec = texture2D(shadowMap, sampleCoord); 
     float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < depth + 0.01){
+    if(currentDepth < depth + 0.005){
       unBlockCount += 1;
     }
   }
@@ -161,7 +161,7 @@ float PCSS(sampler2D shadowMap, vec4 coords){
     vec4 depthVec = texture2D(shadowMap, sampleCoord); 
     float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < depth + 0.01){
+    if(currentDepth < depth + 0.005){
       unBlockCount += 1;
     }
   }
@@ -182,7 +182,7 @@ float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
   // float bias = max(0.01 * (1.0 - dot(normalize(vNormal), normalize(uLightPos))), 0.005);
   // Reduce the program complexity on multisource,
   // use a constant bias to avoid the case split.
-  float bias = 0.01;
+  float bias = 0.005;
   float shadow = depth+bias > currentDepth ? 1.0 : 0.0;
   return shadow;
 }
@@ -226,13 +226,13 @@ void main(void) {
   //visibility2 = PCF(uShadowMap2, vec4(shadowCoord2, 1.0));
   visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
 
-  if (dot(uLightPos.xz, uLightPos2.xz) < 0.0){
+  // if (dot(uLightPos.xz, uLightPos2.xz) < 0.0){
     // on the opposite side, the shadow could be lightened.
-    visibility = max(visibility, visibility2);
-  } else {
+    // visibility = max(visibility, visibility2);
+  // } else {
     // on the same side, the shadow is added up.
     visibility = (visibility + visibility2) / 2.0;
-  }
+  // }
 
   vec3 radiance2 = calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
   radiance += radiance2;
