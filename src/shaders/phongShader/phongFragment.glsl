@@ -129,7 +129,7 @@ float PCF(sampler2D shadowMap, vec4 coords) {
     vec4 depthVec = texture2D(shadowMap, sampleCoord); 
     float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < depth + 0.01){
+    if(currentDepth < depth + 0.005){
       unBlockCount += 1;
     }
   }
@@ -159,7 +159,7 @@ float PCSS(sampler2D shadowMap, vec4 coords){
     vec4 depthVec = texture2D(shadowMap, sampleCoord); 
     float depth = unpack(depthVec);
     float currentDepth = coords.z;
-    if(currentDepth < depth + 0.01){
+    if(currentDepth < depth + 0.005){
       unBlockCount += 1;
     }
   }
@@ -170,11 +170,16 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  vec4 closestDepthVec = texture2D(shadowMap, shadowCoord.xy);
-  float closestDepth = unpack(closestDepthVec);
+  vec4 depthVec = texture2D(shadowMap, shadowCoord.xy);
+  float depth = unpack(depthVec);
   float currentDepth = shadowCoord.z;
+  // Case 1: No bias
+  // float bias = 0.0;
+  // Case 2: Constant bias
+  // float bias = 0.005;
+  // Case 3: Variable bias
   float bias = max(0.01 * (1.0 - dot(normalize(vNormal), normalize(uLightPos))), 0.005);
-  float shadow = closestDepth > currentDepth - bias ? 1.0 : 0.0;
+  float shadow = depth + bias > currentDepth ? 1.0 : 0.0;
   return shadow;
 }
 
@@ -207,8 +212,8 @@ void main(void) {
   vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w;
   shadowCoord = shadowCoord * 0.5 + 0.5;
   visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
-  //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
-  //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
   vec3 phongColor = blinnPhong();
 
