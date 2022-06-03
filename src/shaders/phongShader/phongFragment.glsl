@@ -115,8 +115,8 @@ float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
 }
 
 float PCF(sampler2D shadowMap, vec4 coords) {
-  //poissonDiskSamples(coords.xy);
-  uniformDiskSamples(coords.xy);
+  poissonDiskSamples(coords.xy);
+  // uniformDiskSamples(coords.xy);
 
   // the size of shadow map filter
   float textureSize = 400.0;
