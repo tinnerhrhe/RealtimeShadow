@@ -227,10 +227,10 @@ void main(void) {
   visibility2 = PCSS(uShadowMap2, vec4(shadowCoord2, 1.0));
 
   // Should not be the avg of visibility
-  // visibility = (visibility + visibility2) / 2.0;
+  visibility = (visibility + visibility2) / 2.0;
 
   // Should be the max of visibility
-  visibility = max(visibility, visibility2);
+  // visibility = max(visibility, visibility2);
 
   vec3 radiance2 = calcDirLight(uLightPos2, uLightIntensity2, color, normal, viewDir);
   radiance += radiance2;
